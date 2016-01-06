@@ -280,7 +280,7 @@ exports.crop = function (options, callback) {
     throw new TypeError("No srcPath or data defined");
   if (!options.height && !options.width)
     throw new TypeError("No width or height defined");
-  
+
   if (options.srcPath){
     var args = options.srcPath;
   } else {
@@ -350,7 +350,8 @@ exports.resizeArgs = function(options) {
     filter: 'Lagrange',
     sharpening: 0.2,
     customArgs: [],
-    timeout: 0
+    timeout: 0,
+    keepAspectRatio: true
   }
 
   // check options
@@ -387,7 +388,11 @@ exports.resizeArgs = function(options) {
     args.push('-resize');
     if (opt.height === 0) args.push(String(opt.width));
     else if (opt.width === 0) args.push('x'+String(opt.height));
-    else args.push(String(opt.width)+'x'+String(opt.height));
+    else {
+      var resize_arg = String(opt.width)+'x'+String(opt.height)
+      if (!opt.keepAspectRatio) resize_arg += '!';
+      args.push(resize_arg)
+    }
   }
   opt.format = opt.format.toLowerCase();
   var isJPEG = (opt.format === 'jpg' || opt.format === 'jpeg');
